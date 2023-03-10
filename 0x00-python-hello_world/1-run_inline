@@ -1,2 +1,3 @@
 #!/bin/bash
-python - c "$PYCODE"
+# Run Python code
+python -c "$PYCODE"
