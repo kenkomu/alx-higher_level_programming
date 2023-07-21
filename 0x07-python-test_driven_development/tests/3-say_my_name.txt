@@ -1,61 +1,45 @@
-The ``3-say_my_name`` module
-======================
+===============================
+Test cases for 3-say_my_name.py
+===============================
+``say_my_name()`` prints My name is <first name> <last name>
+Check if the file has root permission
+    >>> import os
+	>>> os.access('3-say_my_name.py', os.X_OK)
+	True
+	>>> os.access('3-say_my_name.py', os.F_OK)
+	True
 
-Using ``say_my_name``
--------------------
+Check normal use
+	>>> say_name = __import__("3-say_my_name")
+	>>> say_name.say_my_name("John", "Smith")
+	My name is John Smith
 
-This is an example text file in reStructuredText format.  First import
-``say_my_name`` from the ``3-say_my_name`` module:
->>> say_my_name = __import__('3-say_my_name').say_my_name
+Check just name is passed
+	>>> say_name.say_my_name("John")
+	My name is John 
 
-__________________________________________________________________________________
-Module documentation test
->>> len(__import__("3-say_my_name").__doc__) > 0
-True
+Check no name passed
+	>>> say_name.say_my_name()
+	Traceback (most recent call last):
+	...
+	TypeError: say_my_name() missing 1 required positional argument: 'first_name'
 
-__________________________________________________________________________________
-Function documentation test
->>> len(__import__("3-say_my_name").say_my_name.__doc__) > 0
-True
 
-__________________________________________________________________________________
-Concatenated name print
->>> say_my_name("John", "Smith")
-My name is John Smith
+Fail cases
+===========
+Since the operation is forming a phrase, any type different from str
+raises an error
+	>>> say_name.say_my_name("Agent", 700)
+	Traceback (most recent call last):
+	...
+	TypeError: last_name must be a string
 
-__________________________________________________________________________________
->>> say_my_name("Walter", "White")
-My name is Walter White
+	>>> say_name.say_my_name([0, 0, 7], "Bond")
+	Traceback (most recent call last):
+	...
+	TypeError: first_name must be a string
 
-__________________________________________________________________________________
-No name
->>> say_my_name("Bob")
-My name is Bob 
-
-__________________________________________________________________________________
-Invalid single first name format
->>> say_my_name(2)
-Traceback (most recent call last):
-    ...
-TypeError: first_name must be a string
-
-__________________________________________________________________________________
-Invalid first name format
->>> say_my_name(4, "White")
-Traceback (most recent call last):
-    ...
-TypeError: first_name must be a string
-
-__________________________________________________________________________________
-Invalid last name format
->>> say_my_name("Bob", 4)
-Traceback (most recent call last):
-    ...
-TypeError: last_name must be a string
-
-__________________________________________________________________________________
-Too many argument
->>> say_my_name("John", "Snow", "White")
-Traceback (most recent call last):
-    ...
-TypeError: say_my_name() takes from 1 to 2 positional arguments but 3 were given
+	>>> say_name.say_my_name(None, 23)
+	Traceback (most recent call last):
+	...
+	TypeError: first_name must be a string
