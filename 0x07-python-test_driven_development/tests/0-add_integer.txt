@@ -1,88 +1,58 @@
-The ``0-add_integer`` module
-======================
+===============================
+Test cases for 0-add_integer.py
+===============================
+Numbers
+=======
+``add_integers()`` returns the sum of 2 arguments, equivalent to use "+"
+Check if the file has root permission
+      	>>> import os
+	>>> os.access('0-add_integer.py', os.X_OK)
+	True
+	>>> os.access('0-add_integer.py', os.F_OK)
+	True
 
-Using ``add_integer``
--------------------
+Check normal use with two integers
+	>>> add_int = __import__("0-add_integer")
+	>>> add_int.add_integer(2, 3)
+	5
 
-This is an example text file in reStructuredText format.  First import
-``add_integer`` from the ``0-add_integer`` module:
-__________________________________________________________________________________
->>> add_integer = __import__('0-add_integer').add_integer
+Case no value is introduced or None is passed
+     	>>> add_int.add_integer()
+	Traceback (most recent call last):
+	...
+	TypeError: add_integer() missing 1 required positional argument: 'a'
+	>>> add_int.add_integer(None)
+	Traceback (most recent call last):
+        ...
+	TypeError: a must be an integer
 
-__________________________________________________________________________________
-Module documentation test
->>> len(__import__("0-add_integer").__doc__) > 0
-True
+Use it for cases a second value isn't inserted
+	>>> add_int.add_integer(-2)
+	96
 
-__________________________________________________________________________________
-Function documentation test
->>> len(__import__("0-add_integer").add_integer.__doc__) > 0
-True
+It also works with floating-point values, casting to int.
+	>>> add_int.add_integer(2.8, 3)
+	5
+	>>> add_int.add_integer(2, 3.8)
+	5
 
-__________________________________________________________________________________
-Add one value to default value
->>> add_integer(6)
-104
-
-__________________________________________________________________________________
-Add two integers
->>> add_integer(6, 4)
-10
-
-__________________________________________________________________________________
-Add one negative to positive value
->>> add_integer(-1, 2)
-1
-
-__________________________________________________________________________________
-Add one positive to negative value
->>> add_integer(100, -2)
-98
-
-__________________________________________________________________________________
-Add one negative value to default value
->>> add_integer(-2)
-96
-
-__________________________________________________________________________________
-Add float value to negative value
->>> add_integer(100.3,-2)
-98
-
-__________________________________________________________________________________
-Add float value to positive value
->>> add_integer(100.3,2)
-102
-
-__________________________________________________________________________________
-Add float value to float value
->>> add_integer(100.3,2.7)
-102
-
-__________________________________________________________________________________
-Only first invalid format parameter
->>> add_integer('a')
-Traceback (most recent call last):
-    ...
-TypeError: a must be an integer
-
-__________________________________________________________________________________
-Only second invalid format parameter
->>> add_integer(2, 'a')
-Traceback (most recent call last):
-    ...
-TypeError: b must be an integer
-
-__________________________________________________________________________________
-Double invalid format
->>> add_integer('a', 'b')
-Traceback (most recent call last):
-    ...
-TypeError: a must be an integer
-
-__________________________________________________________________________________
-Too many argument
->>> add_integer(1, 3, 2)
-Traceback (most recent call last):
-    ...
-TypeError: add_integer() takes from 1 to 2 positional arguments but 3 were given
+Non-Numbers
+===========
+Since the operation is adding integers, any type different from int or float
+raises an error.
+	>>> add_int.add_integer('Hello', 3)
+	Traceback (most recent call last):
+        ...
+	TypeError: a must be an integer
+	>>> add_int.add_integer(3, 'Hello')
+	Traceback (most recent call last):
+        ...
+	TypeError: b must be an integer
+	>>> add_int.add_integer('Hello', 'World')
+	Traceback (most recent call last):
+        ...
+	TypeError: a must be an integer
+	>>> add_int.add_integer(1.8, 1000e1000)
+	Traceback (most recent call last):
+	...
+	OverflowError: cannot convert float infinity to integer
