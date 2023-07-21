@@ -54,3 +54,4 @@ if __name__ == "__main__":
 
     nqueens(board, 0, N, solutions)
     print_solutions(solutions)
+
