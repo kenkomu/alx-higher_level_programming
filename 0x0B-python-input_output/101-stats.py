@@ -1,57 +1,60 @@
 #!/usr/bin/python3
-""" script that count request by web request status """
+# 101-stats.py
+# Brennan D Baraban <375@holbertonschool.com>
+"""Reads from standard input and computes metrics.
+
+After every ten lines or the input of a keyboard interruption (CTRL + C),
+prints the following statistics:
+    - Total file size up to that point.
+    - Count of read status codes up to that point.
+"""
 
 
-import sys
-import re
+def print_stats(size, status_codes):
+    """Print accumulated metrics.
 
+    Args:
+        size (int): The accumulated read file size.
+        status_codes (dict): The accumulated count of status codes.
+    """
+    print("File size: {}".format(size))
+    for key in sorted(status_codes):
+        print("{}: {}".format(key, status_codes[key]))
 
-file_size = 0
-status_count = {
-    200: 0, 301: 0, 400: 0, 401: 0,
-    403: 0, 404: 0, 405: 0, 500: 0
-}
+if __name__ == "__main__":
+    import sys
 
+    size = 0
+    status_codes = {}
+    valid_codes = ['200', '301', '400', '401', '403', '404', '405', '500']
+    count = 0
 
-def incrementErrorStatusCount(prmString):
-    """ increment request number """
-    global file_size, status_count
     try:
-        data = re.split("(.*) (.*) ([0-9]*)$", prmString)
-        if len(data) == 5:
-            if data[-3].isnumeric():
-                errorCode = int(data[-3])
-            file_size += (int(data[-2]))
-        if len(data) == 5 and checkValidity(errorCode) is True:
-            status_count[errorCode] += 1
+        for line in sys.stdin:
+            if count == 10:
+                print_stats(size, status_codes)
+                count = 1
+            else:
+                count += 1
 
-    except:
-        pass
+            line = line.split()
 
+            try:
+                size += int(line[-1])
+            except (IndexError, ValueError):
+                pass
 
-def checkValidity(prmErrorCode):
-    """ check error code validity """
-    global status_count
-    if prmErrorCode in status_count:
-        return True
-    return False
+            try:
+                if line[-2] in valid_codes:
+                    if status_codes.get(line[-2], -1) == -1:
+                        status_codes[line[-2]] = 1
+                    else:
+                        status_codes[line[-2]] += 1
+            except IndexError:
+                pass
 
+        print_stats(size, status_codes)
 
-def printStatistics():
-    """ print statistics """
-    global file_size, status_count
-    print("File size: {:d}".format(file_size))
-    for errorCode, count in sorted(status_count.items()):
-        if status_count[errorCode]:
-            print("{:d}: {:d}".format(errorCode, count))
-
-
-try:
-    for index, line in enumerate(sys.stdin):
-        incrementErrorStatusCount(line)
-        if (index + 1) % 10 == 0:
-            printStatistics()
-except KeyboardInterrupt:
-    pass
-finally:
-    printStatistics()
+    except KeyboardInterrupt:
+        print_stats(size, status_codes)
+        raise
